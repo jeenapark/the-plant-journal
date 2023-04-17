@@ -7,6 +7,34 @@
   pointer-events: none;
 }
 
+.login {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.formdiv {
+  font-family: 'Poppins', sans-serif;
+  border: 2px solid #d3d3d3;
+  border-radius: .5em;
+  padding: 1em;
+  text-align: left;
+  width: 400px;
+  background-color: rgba(176, 202, 148, 0.958);
+}
+
+.login-errors {
+  color: red;
+}
+
+.header {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 800;
+  font-size: 48px;
+  text-align: center;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
