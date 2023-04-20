@@ -7,6 +7,11 @@
   pointer-events: none;
 }
 
+.body {
+  max-height: 85vh;
+  overflow: auto;
+}
+
 .login {
   height: 100vh;
   display: flex;
@@ -33,6 +38,29 @@
   font-weight: 800;
   font-size: 48px;
   text-align: center;
+}
+
+.navbar {
+  background-color: #b0ca94;
+}
+
+.bg-image {
+  background-image: url("../images/succulent.jpeg");
+  height: 100vh;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.organisms {
+  display: flex;
+}
+
+.card-button {
+  float: right;
 }
 
 @media (prefers-reduced-motion: no-preference) {
