@@ -1,23 +1,23 @@
 import React, { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { addDoc, collection, doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { addDoc, collection, doc, serverTimestamp, getDocs, deleteDoc } from "firebase/firestore";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { db, storage } from "../firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
-function OrganismForm({ modal, setModal, organismForm, setOrganismForm, deleteModal, setDeleteModal }) {
+function OrganismForm({ modal, setModal, organismForm, setOrganismForm, organismIdToEdit, organisms, setOrganisms }) {
     const { currentUser } = useContext(AuthContext)
 
     const [newOrganismName, setOrganismName] = useState("");
     const [newOrganismSpecies, setOrganismSpecies] = useState("");
     const [newOrganismImage, setOrganismImage] = useState("");
     const [file, setFile] = useState("");
+    const [uploadPer, setUploadPer] = useState(null);
 
     const toggle = () => setModal(!modal);
     // const editToggle = () => setOrganismForm(!organismForm);
-    // const deleteToggle = () => setDeleteModal(!deleteModal);
 
     useEffect(() => {
         const uploadFile = () => {
@@ -29,6 +29,7 @@ function OrganismForm({ modal, setModal, organismForm, setOrganismForm, deleteMo
                 (snapshot) => {
                     const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                     console.log('Upload is ' + progress + '% done');
+                    setUploadPer(progress);
                     switch (snapshot.state) {
                         case 'paused':
                             console.log('Upload is paused');
@@ -63,6 +64,14 @@ function OrganismForm({ modal, setModal, organismForm, setOrganismForm, deleteMo
             user_id: currentUser.uid,
             timeStamp: serverTimestamp(),
         });
+
+        let list = [];
+        const querySnapshot = await getDocs(collection(db, "organisms"));
+        querySnapshot.forEach((doc) => {
+            list.push({ id: doc.id, ...doc.data() });
+        })
+        setOrganisms(list);
+
         e.target.reset();
         setOrganismName("");
         setOrganismSpecies("");
@@ -73,21 +82,21 @@ function OrganismForm({ modal, setModal, organismForm, setOrganismForm, deleteMo
     return (
         <div>
             <Modal centered show={modal} onHide={toggle}>
-            <Form style={{ backgroundColor: 'rgba(176, 202, 148)', padding: '15px', borderRadius: '.5em', fontFamily: 'Poppins' }} onSubmit={handleAddNewOrganism}>
-                <Form.Group className="pb-2">
-                    <Form.Label>Plant Name:</Form.Label>
-                    <Form.Control autoFocus type="text" placeholder="What's your plant's name?" onChange={e => setOrganismName(e.target.value)}></Form.Control>
-                </Form.Group>
-                <Form.Group className="pb-2">
-                    <Form.Label>Species:</Form.Label>
-                    <Form.Control type="text" placeholder="What kind of plant is it?" onChange={e => setOrganismSpecies(e.target.value)}></Form.Control>
-                </Form.Group>
-                <Form.Group className="pb-3">
-                    <Form.Label>Photo:</Form.Label>
-                    <Form.Control type="file" accept="image/*" placeholder="Upload photo here" onChange={e => setFile(e.target.files[0])}></Form.Control>
-                </Form.Group>
-                <Button onClick={toggle} type="submit" style={{ float: 'right' }} variant="secondary">add new plant</Button>
-            </Form>
+                <Form style={{ backgroundColor: 'rgba(176, 202, 148)', padding: '15px', borderRadius: '.5em', fontFamily: 'Poppins' }} onSubmit={handleAddNewOrganism}>
+                    <Form.Group className="pb-2">
+                        <Form.Label>Plant Name:</Form.Label>
+                        <Form.Control autoFocus type="text" placeholder="What's your plant's name?" onChange={e => setOrganismName(e.target.value)}></Form.Control>
+                    </Form.Group>
+                    <Form.Group className="pb-2">
+                        <Form.Label>Species:</Form.Label>
+                        <Form.Control type="text" placeholder="What kind of plant is it?" onChange={e => setOrganismSpecies(e.target.value)}></Form.Control>
+                    </Form.Group>
+                    <Form.Group className="pb-3">
+                        <Form.Label>Photo:</Form.Label>
+                        <Form.Control type="file" accept="image/*" placeholder="Upload photo here" onChange={e => setFile(e.target.files[0])}></Form.Control>
+                    </Form.Group>
+                    <Button onClick={toggle} type="submit" style={{ float: 'right' }} variant="secondary" disabled={uploadPer !== null && uploadPer < 100}>add new plant</Button>
+                </Form>
             </Modal>
             {/* <Modal centered isOpen={organismForm} toggle={editToggle}>
                 <Form style={{ backgroundColor: 'rgba(176, 202, 148)', padding: '15px', borderRadius: '.5em', fontFamily: 'Poppins' }}>
@@ -100,17 +109,6 @@ function OrganismForm({ modal, setModal, organismForm, setOrganismForm, deleteMo
                         <Form.Control type="text" placeholder="Edit plant species"></Form.Control>
                     </Form.Group>
                     <Button onClick={editToggle} type="submit">Edit</Button>
-                </Form>
-            </Modal>
-            <Modal centered isOpen={deleteModal} toggle={deleteToggle}>
-                <Form style={{ backgroundColor: 'rgba(176, 202, 148)', padding: '15px', borderRadius: '.5em', fontFamily: 'Poppins' }}>
-                    <Form.Group>
-                        <Button style={{ float: 'right' }} className="btn-close" aria-label="Close" onClick={deleteToggle}></Button>
-                        <Form.Label>
-                            Are you sure you want to delete your plant?
-                        </Form.Label>
-                    </Form.Group>
-                    <Button style={{ float: 'right' }} color="danger" onClick={deleteToggle} type="submit">yes, delete plant</Button>
                 </Form>
             </Modal> */}
         </div>

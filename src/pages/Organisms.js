@@ -7,17 +7,25 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
+import Ratio from "react-bootstrap/Ratio";
+import { deleteDoc, doc } from "firebase/firestore";
+import { db } from "../firebase";
 import { Link } from "react-router-dom";
 
-function Organisms({ organisms, modal, setModal }) {
+function Organisms({ organisms, setOrganisms, modal, setModal, setOrganismIdToEdit }) {
 
     const toggle = () => setModal(!modal);
 
+    const handleDeleteOrganism = async (e) => {
+        await deleteDoc(doc(db, "organisms", e.target.value));
+        setOrganisms(organisms.filter((organism) => organism.id !== e.target.value));
+    }
+
     const renderEachOrganism = organisms.map((organism) => {
         return (
-            <Col key={organism.id}>
-                <Card>
-                    <Card.Img alt="plant image" variant="top" src={organism.photo} style={{ height: '35vh', objectFit: 'cover' }} />
+            <Col sm md={4} key={organism.id}>
+                <Card className="h-100" style={{ maxWidth: '25rem' }}>
+                    <Card.Img alt="plant image" variant="top" src={organism.photo} style={{ width: '100%', height: '45vh', objectFit: 'cover' }} />
                     <Card.Body>
                         <Card.Title>{organism.name}</Card.Title>
                         <Card.Subtitle>{organism.species}</Card.Subtitle>
@@ -25,8 +33,8 @@ function Organisms({ organisms, modal, setModal }) {
                         <ButtonGroup className="card-button">
                             <Button variant="secondary">see entries</Button>
                             <DropdownButton as={ButtonGroup} id="bg-nested-dropdown" variant="secondary" title="">
-                                <Dropdown.Item eventKey="1">edit plant</Dropdown.Item>
-                                <Dropdown.Item eventKey="2">plant died :(</Dropdown.Item>
+                                <Dropdown.Item as="button">edit plant</Dropdown.Item>
+                                <Dropdown.Item as="button" value={organism.id} onClick={handleDeleteOrganism} variant="danger">plant died :(</Dropdown.Item>
                             </DropdownButton>
                         </ButtonGroup>
                     </Card.Body>
@@ -37,11 +45,11 @@ function Organisms({ organisms, modal, setModal }) {
 
     return (
         <div className="container">
-            <Row xs={2} md={3} className="g-3 pt-3">
+            <Row className="g-3 pt-3">
                 {renderEachOrganism}
-                <Col>
-                    <Card>
-                        <Card.Img alt="plant image" variant="top" src={cactus} style={{ height: '35vh', objectFit: 'cover' }} width="100%" />
+                <Col sm>
+                    <Card className="h-100" style={{ maxWidth: '25rem' }}>
+                        <Card.Img alt="plant image" variant="top" src={cactus} style={{ width: '100%', height: '45vh', objectFit: 'cover' }} />
                         <Card.Body>
                             <Card.Title>Plant Name</Card.Title>
                             <Card.Subtitle>Plant Species</Card.Subtitle>

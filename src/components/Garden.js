@@ -6,10 +6,10 @@ import Organisms from "../pages/Organisms";
 
 function Garden() {
     const [allOrganisms, setAllOrganisms] = useState([]);
+    const [organismIdToEdit, setOrganismIdToEdit] = useState("");
 
     const [modal, setModal] = useState(false);
     const [organismForm, setOrganismForm] = useState(false);
-    const [deleteModal, setDeleteModal] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -31,8 +31,8 @@ function Garden() {
 
     return (
         <div>
-            <Organisms organisms={allOrganisms} modal={modal} setModal={setModal}/>
-            <OrganismForm modal={modal} setModal={setModal} organismForm={organismForm} setOrganismForm={setOrganismForm} deleteModal={deleteModal} setDeleteModal={setDeleteModal}/>
+            <Organisms organisms={allOrganisms} setOrganisms={setAllOrganisms} modal={modal} setModal={setModal} setOrganismIdToEdit={setOrganismIdToEdit}/>
+            <OrganismForm organisms={allOrganisms} setOrganisms={setAllOrganisms} modal={modal} setModal={setModal} organismForm={organismForm} setOrganismForm={setOrganismForm} organismIdToEdit={organismIdToEdit} setOrganismIdToEdit={setOrganismIdToEdit} />
         </div>
     );
 }
