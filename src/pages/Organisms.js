@@ -21,10 +21,18 @@ function Organisms({ organisms, setOrganisms, modal, setModal, setOrganismIdToEd
         setOrganisms(organisms.filter((organism) => organism.id !== e.target.value));
     }
 
+    let cardsInColumn = 0;
+
+    if (organisms.length <= 2) {
+        cardsInColumn = 0;
+    } else {
+        cardsInColumn = 4;
+    }
+
     const renderEachOrganism = organisms.map((organism) => {
         return (
-            <Col sm md={4} key={organism.id}>
-                <Card className="h-100" style={{ maxWidth: '25rem' }}>
+            <Col sm md={cardsInColumn} key={organism.id}>
+                <Card className="h-100">
                     <Card.Img alt="plant image" variant="top" src={organism.photo} style={{ width: '100%', height: '45vh', objectFit: 'cover' }} />
                     <Card.Body>
                         <Card.Title>{organism.name}</Card.Title>
@@ -47,8 +55,8 @@ function Organisms({ organisms, setOrganisms, modal, setModal, setOrganismIdToEd
         <div className="container">
             <Row className="g-3 pt-3">
                 {renderEachOrganism}
-                <Col sm>
-                    <Card className="h-100" style={{ maxWidth: '25rem' }}>
+                <Col sm md={cardsInColumn}>
+                    <Card className="h-100">
                         <Card.Img alt="plant image" variant="top" src={cactus} style={{ width: '100%', height: '45vh', objectFit: 'cover' }} />
                         <Card.Body>
                             <Card.Title>Plant Name</Card.Title>
