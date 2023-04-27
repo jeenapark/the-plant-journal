@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from "react";
-import OrganismForm from "../pages/OrganismForm";
+import React, { useEffect, useState, useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
+import OrganismForm from "./OrganismForm";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
-import Organisms from "../pages/Organisms";
+import Organisms from "./Organisms";
 
 function Garden() {
+    const { currentUser } = useContext(AuthContext)
+
     const [allOrganisms, setAllOrganisms] = useState([]);
     const [organismIdToEdit, setOrganismIdToEdit] = useState("");
 
@@ -28,6 +31,7 @@ function Garden() {
     }, []);
 
     // console.log(allOrganisms, "all organisms")
+    // console.log(currentUser.uid, "current user")
 
     return (
         <div>

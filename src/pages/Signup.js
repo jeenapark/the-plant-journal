@@ -2,9 +2,8 @@ import React, { useContext, useState } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button"
 import { useNavigate } from "react-router-dom";
-import { doc, serverTimestamp, setDoc } from "firebase/firestore";
-import { auth, db } from "../firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { AuthContext } from "../context/AuthContext";
 
 function Signup() {
@@ -17,26 +16,20 @@ function Signup() {
 
     const { dispatch } = useContext(AuthContext);
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
         const { isValid, validationErrors } = validate();
         if (isValid) {
             setErrors({});
-            try {
-                const res = await createUserWithEmailAndPassword(auth, email, password)
+            createUserWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
                     const user = userCredential.user;
                     dispatch({ type: "LOGIN", payload: user });
                     navigate("/");
-                })
-                await setDoc(doc(db, "users", res.user.uid), {
-                    username,
-                    email,
-                    timeStamp: serverTimestamp(),
+                    updateProfile(userCredential.user, {
+                        displayName: username,
+                    });
                 });
-            } catch (err) {
-                console.log(err);
-            }
         } else {
             setErrors(validationErrors);
         }
@@ -63,10 +56,6 @@ function Signup() {
         }
     }
 
-    function addUsername(e) {
-        setUsername(e.target.value);
-    }
-
     return (
         <div className="login">
             <Form className="formdiv rounded p-4 p-sm-4" onSubmit={handleSubmit}>
@@ -77,7 +66,7 @@ function Signup() {
                         type="text"
                         name="username"
                         value={username}
-                        onChange={addUsername}
+                        onChange={(e) => setUsername(e.target.value)}
                         placeholder="plants4lyfe"
                     />
                     <p style={{ color: "red" }}>

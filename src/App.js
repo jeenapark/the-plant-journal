@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import { AuthContext } from './context/AuthContext';
 import './style/App.css';
 import Login from './pages/Login';
-import Garden from './components/Garden';
+import Garden from './pages/Garden';
 import Signup from './pages/Signup';
 import NavBar from './components/NavBar';
 
@@ -14,7 +14,7 @@ function App() {
         return currentUser ? children : <Navigate to="/login" />;
     };
 
-    // console.log(currentUser, "current user")
+    console.log(currentUser, "current user")
 
     return (
         <>
