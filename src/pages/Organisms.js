@@ -7,7 +7,6 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
-import Ratio from "react-bootstrap/Ratio";
 import { deleteDoc, doc } from "firebase/firestore";
 import { db } from "../firebase";
 import { Link } from "react-router-dom";
@@ -39,7 +38,9 @@ function Organisms({ organisms, setOrganisms, modal, setModal, setOrganismIdToEd
                         <Card.Subtitle>{organism.species}</Card.Subtitle>
                         <br></br>
                         <ButtonGroup className="card-button">
-                            <Button variant="secondary">see entries</Button>
+                            <Link to={`/entries/${organism.id}`}>
+                                <Button value={organism.id} variant="secondary">see entries</Button>
+                            </Link>
                             <DropdownButton as={ButtonGroup} id="bg-nested-dropdown" variant="secondary" title="">
                                 <Dropdown.Item as="button">edit plant</Dropdown.Item>
                                 <Dropdown.Item as="button" value={organism.id} onClick={handleDeleteOrganism} variant="danger">plant died :(</Dropdown.Item>

@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { addDoc, collection, doc, serverTimestamp, getDocs, deleteDoc } from "firebase/firestore";
+import { addDoc, collection, doc, serverTimestamp, getDocs, query, where } from "firebase/firestore";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -66,7 +66,8 @@ function OrganismForm({ modal, setModal, organismForm, setOrganismForm, organism
         });
 
         let list = [];
-        const querySnapshot = await getDocs(collection(db, "organisms"));
+        const q = query(collection(db, "organisms"), where("user_id", "==", currentUser.uid));
+        const querySnapshot = await getDocs(q);
         querySnapshot.forEach((doc) => {
             list.push({ id: doc.id, ...doc.data() });
         })

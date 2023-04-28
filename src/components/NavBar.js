@@ -14,7 +14,7 @@ function NavBar() {
         signOut(auth).then(() => {
             dispatch({ type: "LOGOUT" });
             navigate("/login");
-        })
+        });
     }
 
     return (

@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import Garden from './pages/Garden';
 import Signup from './pages/Signup';
 import NavBar from './components/NavBar';
+import Entries from './pages/Entries';
 
 function App() {
     const { currentUser } = useContext(AuthContext)
@@ -13,8 +14,6 @@ function App() {
     const RequireAuth = ({ children }) => {
         return currentUser ? children : <Navigate to="/login" />;
     };
-
-    console.log(currentUser, "current user")
 
     return (
         <>
@@ -30,6 +29,13 @@ function App() {
                                 element={
                                     <RequireAuth>
                                         <Garden />
+                                    </RequireAuth>
+                                }
+                            />
+                            <Route path="/entries/:organismId"
+                                element={
+                                    <RequireAuth>
+                                        <Entries />
                                     </RequireAuth>
                                 }
                             />
