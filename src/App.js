@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { AuthContext } from './context/AuthContext';
 import './style/App.css';
 import Login from './pages/Login';
@@ -9,7 +9,8 @@ import NavBar from './components/NavBar';
 import Entries from './pages/Entries';
 
 function App() {
-    const { currentUser } = useContext(AuthContext)
+    const { currentUser } = useContext(AuthContext);
+    const [showOrganismName, setShowOrganismName] = useState("");
 
     const RequireAuth = ({ children }) => {
         return currentUser ? children : <Navigate to="/login" />;
@@ -17,7 +18,7 @@ function App() {
 
     return (
         <>
-            <NavBar />
+            <NavBar showOrganismName={showOrganismName}/>
             <div className="bg-image">
                 <div className='body'>
                     <Routes>
@@ -28,7 +29,7 @@ function App() {
                                 index
                                 element={
                                     <RequireAuth>
-                                        <Garden />
+                                        <Garden setShowOrganismName={setShowOrganismName}/>
                                     </RequireAuth>
                                 }
                             />

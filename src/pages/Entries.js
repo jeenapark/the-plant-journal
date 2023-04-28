@@ -5,13 +5,10 @@ import cactus from "../images/cactus.jpeg";
 import EntryForm from "./EntryForm";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
-import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Modal from "react-bootstrap/Modal";
-import DropdownButton from "react-bootstrap/DropdownButton";
-import Dropdown from "react-bootstrap/Dropdown";
-import { collectionGroup, query, where, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { collectionGroup, query, where, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
 
 function Entries() {
@@ -58,13 +55,7 @@ function Entries() {
                     <Card.Body>
                         <Card.Subtitle>{formatDate}</Card.Subtitle>
                         <Card.Text style={{ height: '45px', overflowY: 'auto', maxHeight: '45px' }}>{entry.note}</Card.Text>
-                        <ButtonGroup className="card-button">
-                            <DropdownButton as={ButtonGroup} id="bg-nested-dropdown" variant="secondary" title="">
-                                <Dropdown.Item as="button">edit entry</Dropdown.Item>
-                                <Dropdown.Item as="button">delete entry</Dropdown.Item>
-                            </DropdownButton>
-
-                        </ButtonGroup>
+                        <Button className="card-button" variant="secondary">edit entry</Button>
                     </Card.Body>
                 </Card>
             </Col>

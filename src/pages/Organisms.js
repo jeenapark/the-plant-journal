@@ -11,7 +11,7 @@ import { deleteDoc, doc } from "firebase/firestore";
 import { db } from "../firebase";
 import { Link } from "react-router-dom";
 
-function Organisms({ organisms, setOrganisms, modal, setModal, setOrganismIdToEdit }) {
+function Organisms({ organisms, setOrganisms, modal, setModal, setOrganismIdToEdit, setShowOrganismName }) {
 
     const toggle = () => setModal(!modal);
 
@@ -39,7 +39,7 @@ function Organisms({ organisms, setOrganisms, modal, setModal, setOrganismIdToEd
                         <br></br>
                         <ButtonGroup className="card-button">
                             <Link to={`/entries/${organism.id}`}>
-                                <Button value={organism.id} variant="secondary">see entries</Button>
+                                <Button value={organism.id} variant="secondary" name={organism.name} title={organism.species} onClick={e => setShowOrganismName(`${e.target.name} the ${e.target.title}`)}>see entries</Button>
                             </Link>
                             <DropdownButton as={ButtonGroup} id="bg-nested-dropdown" variant="secondary" title="">
                                 <Dropdown.Item as="button">edit plant</Dropdown.Item>

@@ -5,7 +5,7 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase";
 import Organisms from "./Organisms";
 
-function Garden() {
+function Garden({ setShowOrganismName }) {
     const { currentUser } = useContext(AuthContext)
 
     const [allOrganisms, setAllOrganisms] = useState([]);
@@ -24,6 +24,7 @@ function Garden() {
                     list.push({ id: doc.id, ...doc.data()});
                 });
                 setAllOrganisms(list);
+                setShowOrganismName("");
             } catch (err) {
                 console.log(err);
             }
@@ -36,7 +37,7 @@ function Garden() {
 
     return (
         <div>
-            <Organisms organisms={allOrganisms} setOrganisms={setAllOrganisms} modal={modal} setModal={setModal} setOrganismIdToEdit={setOrganismIdToEdit}/>
+            <Organisms organisms={allOrganisms} setOrganisms={setAllOrganisms} modal={modal} setModal={setModal} setOrganismIdToEdit={setOrganismIdToEdit} setShowOrganismName={setShowOrganismName}/>
             <OrganismForm organisms={allOrganisms} setOrganisms={setAllOrganisms} modal={modal} setModal={setModal} organismForm={organismForm} setOrganismForm={setOrganismForm} organismIdToEdit={organismIdToEdit} setOrganismIdToEdit={setOrganismIdToEdit} />
         </div>
     );

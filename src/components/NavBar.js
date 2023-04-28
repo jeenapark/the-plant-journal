@@ -2,11 +2,12 @@ import React, { useContext } from "react";
 import { AuthContext } from "../context/AuthContext"
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
+import NavItem from "react-bootstrap/NavItem";
 import { auth } from "../firebase";
 import { signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 
-function NavBar() {
+function NavBar({ showOrganismName }) {
     const { currentUser, dispatch } = useContext(AuthContext);
     const navigate = useNavigate();
 
@@ -23,6 +24,7 @@ function NavBar() {
                 <Navbar collapseOnSelect expand="lg" className="navbar fixed-top">
                     <div className="container-fluid">
                         <Navbar.Brand href="/">THE PLANT JOURNAL</Navbar.Brand>
+                        {showOrganismName ? <NavItem>{showOrganismName}</NavItem> : null}
                         <Navbar.Toggle aria-controls="responsive-navbar-nav"></Navbar.Toggle>
                         <Navbar.Collapse id="responsive-navbar-nav">
                             <Nav className="ms-auto">
