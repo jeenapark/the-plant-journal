@@ -10,6 +10,8 @@ function Garden({ setShowOrganismName }) {
 
     const [allOrganisms, setAllOrganisms] = useState([]);
     const [organismIdToEdit, setOrganismIdToEdit] = useState("");
+    const [organismNameToEdit, setOrganismNameToEdit] = useState("");
+    const [organismSpeciesToEdit, setOrganismSpeciesToEdit] = useState("");
 
     const [modal, setModal] = useState(false);
     const [organismForm, setOrganismForm] = useState(false);
@@ -30,15 +32,12 @@ function Garden({ setShowOrganismName }) {
             }
         }
         fetchData();
-    }, []);
-
-    // console.log(allOrganisms, "all organisms")
-    // console.log(currentUser.uid, "current user")
+    }, [currentUser, setShowOrganismName]);
 
     return (
         <div>
-            <Organisms organisms={allOrganisms} setOrganisms={setAllOrganisms} modal={modal} setModal={setModal} setOrganismIdToEdit={setOrganismIdToEdit} setShowOrganismName={setShowOrganismName}/>
-            <OrganismForm organisms={allOrganisms} setOrganisms={setAllOrganisms} modal={modal} setModal={setModal} organismForm={organismForm} setOrganismForm={setOrganismForm} organismIdToEdit={organismIdToEdit} setOrganismIdToEdit={setOrganismIdToEdit} />
+            <Organisms organisms={allOrganisms} setOrganisms={setAllOrganisms} modal={modal} setModal={setModal} organismForm={organismForm} setOrganismForm={setOrganismForm} organismIdToEdit={organismIdToEdit} setOrganismIdToEdit={setOrganismIdToEdit} setShowOrganismName={setShowOrganismName} organismNameToEdit={organismNameToEdit} setOrganismNameToEdit={setOrganismNameToEdit} organismSpeciesToEdit={organismSpeciesToEdit} setOrganismSpeciesToEdit={setOrganismSpeciesToEdit} />
+            <OrganismForm setOrganisms={setAllOrganisms} modal={modal} setModal={setModal} organismForm={organismForm} setOrganismForm={setOrganismForm} organismIdToEdit={organismIdToEdit} setOrganismIdToEdit={setOrganismIdToEdit} organismNameToEdit={organismNameToEdit} setOrganismNameToEdit={setOrganismNameToEdit} organismSpeciesToEdit={organismSpeciesToEdit} setOrganismSpeciesToEdit={setOrganismSpeciesToEdit} />
         </div>
     );
 }

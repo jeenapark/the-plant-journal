@@ -7,13 +7,21 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
-import { deleteDoc, doc } from "firebase/firestore";
+import { deleteDoc, doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { Link } from "react-router-dom";
 
-function Organisms({ organisms, setOrganisms, modal, setModal, setOrganismIdToEdit, setShowOrganismName }) {
+function Organisms({ organisms, setOrganisms, modal, setModal, organismForm, setOrganismForm, setOrganismIdToEdit, setShowOrganismName, setOrganismNameToEdit, setOrganismSpeciesToEdit }) {
 
     const toggle = () => setModal(!modal);
+    const editToggle = async (e) => {
+        setOrganismForm(!organismForm);
+        setOrganismIdToEdit(e.target.value);
+
+        const fetchData = await getDoc(doc(db, "organisms", e.target.value));
+        setOrganismNameToEdit(fetchData.data().name);
+        setOrganismSpeciesToEdit(fetchData.data().species);
+    }
 
     const handleDeleteOrganism = async (e) => {
         await deleteDoc(doc(db, "organisms", e.target.value));
@@ -42,7 +50,7 @@ function Organisms({ organisms, setOrganisms, modal, setModal, setOrganismIdToEd
                                 <Button value={organism.id} variant="secondary" name={organism.name} title={organism.species} onClick={e => setShowOrganismName(`${e.target.name} the ${e.target.title}`)}>see entries</Button>
                             </Link>
                             <DropdownButton as={ButtonGroup} id="bg-nested-dropdown" variant="secondary" title="">
-                                <Dropdown.Item as="button">edit plant</Dropdown.Item>
+                                <Dropdown.Item as="button" value={organism.id} onClick={editToggle}>edit plant</Dropdown.Item>
                                 <Dropdown.Item as="button" value={organism.id} onClick={handleDeleteOrganism} variant="danger">plant died :(</Dropdown.Item>
                             </DropdownButton>
                         </ButtonGroup>
