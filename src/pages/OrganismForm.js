@@ -21,7 +21,6 @@ function OrganismForm({ modal, setModal, organismForm, setOrganismForm, organism
 
     useEffect(() => {
         const uploadFile = () => {
-            const name = new Date().getTime() + file.name;
             const storageRef = ref(storage, file.name);
             const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -57,7 +56,7 @@ function OrganismForm({ modal, setModal, organismForm, setOrganismForm, organism
 
     const handleAddNewOrganism = async (e) => {
         e.preventDefault();
-        const res = await addDoc(collection(db, "organisms"), {
+        await addDoc(collection(db, "organisms"), {
             name: newOrganismName,
             species: newOrganismSpecies,
             photo: newOrganismImage,

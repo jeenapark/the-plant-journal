@@ -1,5 +1,5 @@
-import React, { useState, useContext, useEffect } from "react";
-import { addDoc, collection, doc, serverTimestamp, getDocs, query, where, collectionGroup } from "firebase/firestore";
+import React, { useState, useEffect } from "react";
+import { addDoc, collection, getDocs, query, where, collectionGroup } from "firebase/firestore";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -15,7 +15,6 @@ function EntryForm({ toggleNewEntryForm, allEntries, setAllEntries, organismId }
 
     useEffect(() => {
         const uploadFile = () => {
-            const name = new Date().getTime() + file.name;
             const storageRef = ref(storage, file.name);
             const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -89,7 +88,7 @@ function EntryForm({ toggleNewEntryForm, allEntries, setAllEntries, organismId }
                     <Form.Label>Photo:</Form.Label>
                     <Form.Control type="file" accept="image/*" placeholder="Upload photo here" onChange={e => setFile(e.target.files[0])}></Form.Control>
                 </Form.Group>
-                <Button onClick={toggleNewEntryForm} type="submit" style={{ float: 'right' }} variant="secondary" disabled={uploadPer !== null && uploadPer < 100}>add new entry</Button>
+                <Button onClick={toggleNewEntryForm} type="submit" className="card-button" variant="secondary" disabled={uploadPer !== null && uploadPer < 100}>add new entry</Button>
             </Form>
         </>
     );
