@@ -1,13 +1,13 @@
 import React, { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { addDoc, collection, doc, serverTimestamp, getDocs, query, where, updateDoc } from "firebase/firestore";
+import { addDoc, collection, doc, serverTimestamp, getDocs, query, where, updateDoc, deleteDoc } from "firebase/firestore";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { db, storage } from "../firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
-function OrganismForm({ modal, setModal, organismForm, setOrganismForm, organismIdToEdit, setOrganisms, organismNameToEdit, setOrganismNameToEdit, organismSpeciesToEdit, setOrganismSpeciesToEdit }) {
+function OrganismForm({ modal, setModal, organismForm, setOrganismForm, organismIdToEdit, organisms, setOrganisms, organismNameToEdit, setOrganismNameToEdit, organismSpeciesToEdit, setOrganismSpeciesToEdit }) {
     const { currentUser } = useContext(AuthContext)
 
     const [newOrganismName, setOrganismName] = useState("");
@@ -56,7 +56,7 @@ function OrganismForm({ modal, setModal, organismForm, setOrganismForm, organism
 
     const handleAddNewOrganism = async (e) => {
         e.preventDefault();
-        await addDoc(collection(db, "organisms"), {
+        await addDoc(collection(db, 'organisms'), {
             name: newOrganismName,
             species: newOrganismSpecies,
             photo: newOrganismImage,
@@ -65,7 +65,7 @@ function OrganismForm({ modal, setModal, organismForm, setOrganismForm, organism
         });
 
         let list = [];
-        const q = query(collection(db, "organisms"), where("user_id", "==", currentUser.uid));
+        const q = query(collection(db, 'organisms'), where('user_id', '==', currentUser.uid));
         const querySnapshot = await getDocs(q);
         querySnapshot.forEach((doc) => {
             list.push({ id: doc.id, ...doc.data() });
@@ -82,7 +82,7 @@ function OrganismForm({ modal, setModal, organismForm, setOrganismForm, organism
     const handleEditOrganism = async (e) => {
         e.preventDefault();
 
-        const organismRef = doc(db, "organisms", organismIdToEdit);
+        const organismRef = doc(db, 'organisms', organismIdToEdit);
 
         await updateDoc(organismRef, {
             name: organismNameToEdit,
@@ -90,12 +90,18 @@ function OrganismForm({ modal, setModal, organismForm, setOrganismForm, organism
         });
 
         let list = [];
-        const q = query(collection(db, "organisms"), where("user_id", "==", currentUser.uid));
+        const q = query(collection(db, 'organisms'), where('user_id', '==', currentUser.uid));
         const querySnapshot = await getDocs(q);
         querySnapshot.forEach((doc) => {
             list.push({ id: doc.id, ...doc.data() });
         })
         setOrganisms(list);
+    }
+
+    const handleDeleteOrganism = async (e) => {
+        await deleteDoc(doc(db, 'organisms', e.target.value));
+        setOrganisms(organisms.filter((organism) => organism.id !== e.target.value));
+        setOrganismForm(!organismForm);
     }
 
     return (
@@ -127,7 +133,8 @@ function OrganismForm({ modal, setModal, organismForm, setOrganismForm, organism
                         <Form.Label>Species:</Form.Label>
                         <Form.Control type="text" placeholder="Edit plant species" value={organismSpeciesToEdit} onChange={(e) => setOrganismSpeciesToEdit(e.target.value)}></Form.Control>
                     </Form.Group>
-                    <Button onClick={editToggle} type="submit" style={{ float: 'right' }} variant="secondary">Save</Button>
+                    <Button onClick={editToggle} type="submit" style={{ float: 'right' }} variant="secondary">save</Button>
+                    <Button value={organismIdToEdit} onClick={handleDeleteOrganism} variant="danger">plant died ☹</Button>
                 </Form>
             </Modal>
         </div>

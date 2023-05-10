@@ -16,16 +16,14 @@ function Organisms({ organisms, setOrganisms, modal, setModal, organismForm, set
     const toggle = () => setModal(!modal);
     const editToggle = async (e) => {
         setOrganismForm(!organismForm);
-        setOrganismIdToEdit(e.target.value);
-
-        const fetchData = await getDoc(doc(db, "organisms", e.target.value));
-        setOrganismNameToEdit(fetchData.data().name);
-        setOrganismSpeciesToEdit(fetchData.data().species);
-    }
-
-    const handleDeleteOrganism = async (e) => {
-        await deleteDoc(doc(db, "organisms", e.target.value));
-        setOrganisms(organisms.filter((organism) => organism.id !== e.target.value));
+        if (e === undefined) {
+            return;
+        } else {
+            setOrganismIdToEdit(e.currentTarget.value);
+            const fetchData = await getDoc(doc(db, 'organisms', e.currentTarget.value));
+            setOrganismNameToEdit(fetchData.data().name);
+            setOrganismSpeciesToEdit(fetchData.data().species);
+        }
     }
 
     let cardsInColumn = 0;
@@ -45,15 +43,10 @@ function Organisms({ organisms, setOrganisms, modal, setModal, organismForm, set
                         <Card.Title>{organism.name}</Card.Title>
                         <Card.Subtitle>{organism.species}</Card.Subtitle>
                         <br></br>
-                        <ButtonGroup className="card-button">
-                            <Link to={`/entries/${organism.id}`}>
-                                <Button value={organism.id} variant="secondary" name={organism.name} title={organism.species} onClick={e => setShowOrganismName(`${e.target.name} the ${e.target.title}`)}>see entries</Button>
-                            </Link>
-                            <DropdownButton as={ButtonGroup} id="bg-nested-dropdown" variant="secondary" title="">
-                                <Dropdown.Item as="button" value={organism.id} onClick={editToggle}>edit plant</Dropdown.Item>
-                                <Dropdown.Item as="button" value={organism.id} onClick={handleDeleteOrganism} variant="danger">plant died :(</Dropdown.Item>
-                            </DropdownButton>
-                        </ButtonGroup>
+                        <Button className="card-button" variant="secondary" aria-label="Edit plant" value={organism.id} onClick={editToggle}><i className="bi bi-pencil-square"></i></Button>
+                        <Link to={`/entries/${organism.id}`}>
+                            <Button className="card-button" value={organism.id} variant="secondary" name={organism.name} title={organism.species} onClick={e => setShowOrganismName(`${e.target.name} the ${e.target.title}`)}>see entries</Button>
+                        </Link>
                     </Card.Body>
                 </Card>
             </Col>

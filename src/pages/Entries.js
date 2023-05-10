@@ -9,7 +9,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
-import { collectionGroup, query, where, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs, getDoc, doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { db } from "../firebase";
 
 function Entries() {
@@ -18,18 +18,22 @@ function Entries() {
     const [editEntryForm, setEditEntryForm] = useState(false);
     const [entryNoteToEdit, setEntryNoteToEdit] = useState("");
     const [entryDateToEdit, setEntryDateToEdit] = useState("");
+    const [entryIdToEdit, setEntryIdToEdit] = useState("");
 
     const organismId = useParams().organismId;
 
     const toggleNewEntryForm = () => setNewEntryForm(!newEntryForm);
-    const toggleEditEntryForm = (e) => {
+    const editToggle = () => setEditEntryForm(!editEntryForm);
+
+    const toggleEditEntryForm = async (e) => {
         setEditEntryForm(!editEntryForm);
         if (e === undefined) {
             return;
         } else {
-            const findEntryToEdit = allEntries.find((entry) => entry.id === e.currentTarget.value);
-            setEntryNoteToEdit(findEntryToEdit.note);
-            setEntryDateToEdit(findEntryToEdit.date);
+            setEntryIdToEdit(e.currentTarget.value);
+            const findEntryToEdit = await getDoc(doc(db, 'entries', e.currentTarget.value));
+            setEntryNoteToEdit(findEntryToEdit.data().note);
+            setEntryDateToEdit(findEntryToEdit.data().date);
         }
     }
 
@@ -37,7 +41,7 @@ function Entries() {
         const fetchData = async () => {
             let list = [];
             try {
-                const entries = query(collectionGroup(db, 'entries'), where('organism_id', '==', organismId));
+                const entries = query(collection(db, 'entries'), where('organism_id', '==', organismId));
                 const querySnapshot = await getDocs(entries);
                 querySnapshot.forEach((doc) => {
                     list.push({ id: doc.id, ...doc.data() });
@@ -49,6 +53,31 @@ function Entries() {
         }
         fetchData();
     }, [organismId]);
+
+    const handleEditEntry = async (e) => {
+        e.preventDefault();
+
+        const entryRef = doc(db, 'entries', entryIdToEdit);
+
+        await updateDoc(entryRef, {
+            note: entryNoteToEdit,
+            date: entryDateToEdit,
+        });
+
+        let list = [];
+        const entries = query(collection(db, 'entries'), where('organism_id', '==', organismId));
+        const querySnapshot = await getDocs(entries);
+        querySnapshot.forEach((doc) => {
+            list.push({ id: doc.id, ...doc.data() });
+        });
+        setAllEntries(list);
+    }
+
+    const handleDeleteEntry = async (e) => {
+        await deleteDoc(doc(db, 'entries', e.target.value));
+        setAllEntries(allEntries.filter((entry) => entry.id !== e.target.value));
+        setEditEntryForm(!editEntryForm);
+    }
 
     let cardsInColumn = 0;
 
@@ -74,7 +103,7 @@ function Entries() {
                 </Card>
             </Col>
         );
-    })
+    });
 
     return (
         <div className="container">
@@ -95,7 +124,7 @@ function Entries() {
                 <EntryForm toggleNewEntryForm={toggleNewEntryForm} allEntries={allEntries} setAllEntries={setAllEntries} organismId={organismId} />
             </Modal>
             <Modal centered show={editEntryForm} onHide={toggleEditEntryForm}>
-                <Form style={{ backgroundColor: 'rgba(176, 202, 148)', padding: '15px', borderRadius: '.5em', fontFamily: 'Poppins' }}>
+                <Form style={{ backgroundColor: 'rgba(176, 202, 148)', padding: '15px', borderRadius: '.5em', fontFamily: 'Poppins' }} onSubmit={handleEditEntry}>
                     <Form.Group className="pb-2">
                         <Form.Label>Note:</Form.Label>
                         <Form.Control autoFocus type="text" value={entryNoteToEdit} onChange={(e) => setEntryNoteToEdit(e.target.value)}></Form.Control>
@@ -104,7 +133,8 @@ function Entries() {
                         <Form.Label>Date:</Form.Label>
                         <Form.Control type="datetime-local" value={entryDateToEdit} onChange={(e) => setEntryDateToEdit(e.target.value)}></Form.Control>
                     </Form.Group>
-                    <Button onClick={toggleEditEntryForm} type="submit" className="card-button" variant="secondary">Save</Button>
+                    <Button onClick={editToggle} type="submit" className="card-button" variant="secondary">save</Button>
+                    <Button value={entryIdToEdit} onClick={handleDeleteEntry} variant="danger">delete entry</Button>
                 </Form>
             </Modal>
         </div>

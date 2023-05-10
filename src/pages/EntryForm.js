@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { addDoc, collection, getDocs, query, where, collectionGroup } from "firebase/firestore";
+import { addDoc, collection, getDocs, query, where, collectionGroup, setDoc, serverTimestamp } from "firebase/firestore";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -50,16 +50,16 @@ function EntryForm({ toggleNewEntryForm, allEntries, setAllEntries, organismId }
 
     const handleAddNewEntry = async (e) => {
         e.preventDefault();
-        const organismsRef = collection(db, 'organisms');
-        await addDoc(collection(organismsRef, organismId, 'entries' ), {
+        await addDoc(collection(db, 'entries'), {
             note: newEntryNote,
             date: newEntryDate,
             photo: newEntryImage,
             organism_id: organismId,
+            timeStamp: serverTimestamp(),
         });
 
         let list = [];
-        const entries = query(collectionGroup(db, 'entries'), where('organism_id', '==', organismId));
+        const entries = query(collection(db, 'entries'), where('organism_id', '==', organismId));
         const querySnapshot = await getDocs(entries);
         querySnapshot.forEach((doc) => {
             list.push({ id: doc.id, ...doc.data()});
