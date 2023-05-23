@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { AuthContext } from "../context/AuthContext"
+import { OrganismNameContext } from "../context/OrganismNameContext";
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavItem from "react-bootstrap/NavItem";
@@ -7,8 +8,9 @@ import { auth } from "../firebase";
 import { signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 
-function NavBar({ showOrganismName }) {
+function NavBar() {
     const { currentUser, dispatch } = useContext(AuthContext);
+    const [showOrganismName] = useContext(OrganismNameContext);
     const navigate = useNavigate();
 
     function handleLogoutClick() {

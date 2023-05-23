@@ -1,12 +1,14 @@
 import React, { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
+import { OrganismNameContext } from "../context/OrganismNameContext";
 import OrganismForm from "./OrganismForm";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase";
 import Organisms from "./Organisms";
 
-function Garden({ setShowOrganismName }) {
+function Garden() {
     const { currentUser } = useContext(AuthContext);
+    const [showOrganismName, setShowOrganismName] = useContext(OrganismNameContext);
 
     const [allOrganisms, setAllOrganisms] = useState([]);
     const [organismIdToEdit, setOrganismIdToEdit] = useState("");
@@ -23,7 +25,7 @@ function Garden({ setShowOrganismName }) {
                 const q = query(collection(db, "organisms"), where("user_id", "==", currentUser.uid));
                 const querySnapshot = await getDocs(q);
                 querySnapshot.forEach((doc) => {
-                    list.push({ id: doc.id, ...doc.data()});
+                    list.push({ id: doc.id, ...doc.data() });
                 });
                 setAllOrganisms(list);
                 setShowOrganismName("");
@@ -36,8 +38,10 @@ function Garden({ setShowOrganismName }) {
 
     return (
         <div>
-            <Organisms organisms={allOrganisms} setOrganisms={setAllOrganisms} modal={modal} setModal={setModal} organismForm={organismForm} setOrganismForm={setOrganismForm} organismIdToEdit={organismIdToEdit} setOrganismIdToEdit={setOrganismIdToEdit} setShowOrganismName={setShowOrganismName} organismNameToEdit={organismNameToEdit} setOrganismNameToEdit={setOrganismNameToEdit} organismSpeciesToEdit={organismSpeciesToEdit} setOrganismSpeciesToEdit={setOrganismSpeciesToEdit} />
-            <OrganismForm organisms={allOrganisms} setOrganisms={setAllOrganisms} modal={modal} setModal={setModal} organismForm={organismForm} setOrganismForm={setOrganismForm} organismIdToEdit={organismIdToEdit} setOrganismIdToEdit={setOrganismIdToEdit} organismNameToEdit={organismNameToEdit} setOrganismNameToEdit={setOrganismNameToEdit} organismSpeciesToEdit={organismSpeciesToEdit} setOrganismSpeciesToEdit={setOrganismSpeciesToEdit} />
+            <OrganismNameContext.Provider value={[showOrganismName, setShowOrganismName]}>
+                <Organisms organisms={allOrganisms} setOrganisms={setAllOrganisms} modal={modal} setModal={setModal} organismForm={organismForm} setOrganismForm={setOrganismForm} organismIdToEdit={organismIdToEdit} setOrganismIdToEdit={setOrganismIdToEdit} organismNameToEdit={organismNameToEdit} setOrganismNameToEdit={setOrganismNameToEdit} organismSpeciesToEdit={organismSpeciesToEdit} setOrganismSpeciesToEdit={setOrganismSpeciesToEdit} />
+                <OrganismForm organisms={allOrganisms} setOrganisms={setAllOrganisms} modal={modal} setModal={setModal} organismForm={organismForm} setOrganismForm={setOrganismForm} organismIdToEdit={organismIdToEdit} setOrganismIdToEdit={setOrganismIdToEdit} organismNameToEdit={organismNameToEdit} setOrganismNameToEdit={setOrganismNameToEdit} organismSpeciesToEdit={organismSpeciesToEdit} setOrganismSpeciesToEdit={setOrganismSpeciesToEdit} />
+            </OrganismNameContext.Provider>
         </div>
     );
 }

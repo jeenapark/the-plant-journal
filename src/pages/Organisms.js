@@ -1,18 +1,16 @@
-import React from "react";
+import React, { useContext } from "react";
 import cactus from "../images/cactus.jpeg";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
-import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import DropdownButton from "react-bootstrap/DropdownButton";
-import Dropdown from "react-bootstrap/Dropdown";
-import { deleteDoc, doc, getDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { Link } from "react-router-dom";
+import { OrganismNameContext } from "../context/OrganismNameContext";
 
-function Organisms({ organisms, setOrganisms, modal, setModal, organismForm, setOrganismForm, setOrganismIdToEdit, setShowOrganismName, setOrganismNameToEdit, setOrganismSpeciesToEdit }) {
-
+function Organisms({ organisms, modal, setModal, organismForm, setOrganismForm, setOrganismIdToEdit, setOrganismNameToEdit, setOrganismSpeciesToEdit }) {
+    const [setShowOrganismName] = useContext(OrganismNameContext);
     const toggle = () => setModal(!modal);
     const editToggle = async (e) => {
         setOrganismForm(!organismForm);
@@ -34,6 +32,11 @@ function Organisms({ organisms, setOrganisms, modal, setModal, organismForm, set
         cardsInColumn = 4;
     }
 
+    function handleShowPlantName(e) {
+        localStorage.setItem('show-plantname', JSON.stringify(`${e.target.name} the ${e.target.title}`));
+        setShowOrganismName(`${e.target.name} the ${e.target.title}`);
+    }
+
     const renderEachOrganism = organisms.map((organism) => {
         return (
             <Col sm md={cardsInColumn} key={organism.id}>
@@ -45,7 +48,7 @@ function Organisms({ organisms, setOrganisms, modal, setModal, organismForm, set
                         <br></br>
                         <Button className="card-button" variant="secondary" aria-label="Edit plant" value={organism.id} onClick={editToggle}><i className="bi bi-pencil-square"></i></Button>
                         <Link to={`/entries/${organism.id}`}>
-                            <Button className="card-button" value={organism.id} variant="secondary" name={organism.name} title={organism.species} onClick={e => setShowOrganismName(`${e.target.name} the ${e.target.title}`)}>see entries</Button>
+                            <Button className="card-button" value={organism.id} variant="secondary" name={organism.name} title={organism.species} onClick={handleShowPlantName}>see entries</Button>
                         </Link>
                     </Card.Body>
                 </Card>
