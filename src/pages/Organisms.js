@@ -10,7 +10,7 @@ import { Link } from "react-router-dom";
 import { OrganismNameContext } from "../context/OrganismNameContext";
 
 function Organisms({ organisms, modal, setModal, organismForm, setOrganismForm, setOrganismIdToEdit, setOrganismNameToEdit, setOrganismSpeciesToEdit }) {
-    const [setShowOrganismName] = useContext(OrganismNameContext);
+    const [showOrganismName, setShowOrganismName] = useContext(OrganismNameContext);
     const toggle = () => setModal(!modal);
     const editToggle = async (e) => {
         setOrganismForm(!organismForm);

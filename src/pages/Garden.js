@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { OrganismNameContext } from "../context/OrganismNameContext";
 import OrganismForm from "./OrganismForm";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { db } from "../firebase";
 import Organisms from "./Organisms";
 
@@ -22,7 +22,7 @@ function Garden() {
         const fetchData = async () => {
             let list = [];
             try {
-                const q = query(collection(db, "organisms"), where("user_id", "==", currentUser.uid));
+                const q = query(collection(db, "organisms"), where("user_id", "==", currentUser.uid), orderBy("name"));
                 const querySnapshot = await getDocs(q);
                 querySnapshot.forEach((doc) => {
                     list.push({ id: doc.id, ...doc.data() });

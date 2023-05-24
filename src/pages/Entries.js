@@ -9,7 +9,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
-import { collection, query, where, getDocs, getDoc, doc, updateDoc, deleteDoc } from "firebase/firestore";
+import { collection, query, where, getDocs, getDoc, doc, updateDoc, deleteDoc, orderBy } from "firebase/firestore";
 import { db } from "../firebase";
 
 function Entries() {
@@ -41,7 +41,7 @@ function Entries() {
         const fetchData = async () => {
             let list = [];
             try {
-                const entries = query(collection(db, 'entries'), where('organism_id', '==', organismId));
+                const entries = query(collection(db, 'entries'), where('organism_id', '==', organismId), orderBy('date', 'asc'));
                 const querySnapshot = await getDocs(entries);
                 querySnapshot.forEach((doc) => {
                     list.push({ id: doc.id, ...doc.data() });
@@ -65,7 +65,7 @@ function Entries() {
         });
 
         let list = [];
-        const entries = query(collection(db, 'entries'), where('organism_id', '==', organismId));
+        const entries = query(collection(db, 'entries'), where('organism_id', '==', organismId), orderBy('date', 'asc'));
         const querySnapshot = await getDocs(entries);
         querySnapshot.forEach((doc) => {
             list.push({ id: doc.id, ...doc.data() });

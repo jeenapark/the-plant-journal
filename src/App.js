@@ -20,7 +20,6 @@ function App() {
     return (
         <>
             <OrganismNameContext.Provider value={[showOrganismName, setShowOrganismName]}>
-                {/* <NavBar showOrganismName={showOrganismName} /> */}
                 <NavBar />
                 <div className="bg-image">
                     <div className='body'>
@@ -32,7 +31,6 @@ function App() {
                                     index
                                     element={
                                         <RequireAuth>
-                                            {/* <Garden setShowOrganismName={setShowOrganismName} /> */}
                                             <Garden />
                                         </RequireAuth>
                                     }

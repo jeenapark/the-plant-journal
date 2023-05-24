@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { addDoc, collection, getDocs, query, where, collectionGroup, setDoc, serverTimestamp } from "firebase/firestore";
-import Modal from "react-bootstrap/Modal";
+import { addDoc, collection, getDocs, query, where, serverTimestamp, orderBy } from "firebase/firestore";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { db, storage } from "../firebase";
@@ -59,7 +58,7 @@ function EntryForm({ toggleNewEntryForm, allEntries, setAllEntries, organismId }
         });
 
         let list = [];
-        const entries = query(collection(db, 'entries'), where('organism_id', '==', organismId));
+        const entries = query(collection(db, 'entries'), where('organism_id', '==', organismId), orderBy('date', 'asc'));
         const querySnapshot = await getDocs(entries);
         querySnapshot.forEach((doc) => {
             list.push({ id: doc.id, ...doc.data()});
