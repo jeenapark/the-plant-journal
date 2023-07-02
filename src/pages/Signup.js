@@ -109,7 +109,7 @@ function Signup() {
                 <Button className="mb-2" variant="secondary" type="submit">Submit</Button>
                 <br></br>
                 <Form.Text color="black">
-                    Already have an account? <a href="/login">Login here.</a>
+                    Already have an account? <a href="/login">Log in here.</a>
                 </Form.Text>
             </Form>
         </div>

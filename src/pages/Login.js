@@ -56,7 +56,7 @@ function Login() {
     return (
         <div className="login">
             <Form className="formdiv rounded p-4" onSubmit={handleLoginSubmit}>
-                <h1 className="header">LOGIN</h1>
+                <h1 className="header">LOG IN</h1>
                 <Form.Group className="mb-3" controlId="formEmail">
                     <Form.Label>Email Address:</Form.Label>
                     <Form.Control type="email" onChange={e => setEmail(e.target.value)} />
